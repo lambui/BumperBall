@@ -16,6 +16,9 @@ public class managerController : MonoBehaviour
 	GameObject[] players;
 	GameObject[] AI;
 
+	public GameObject canvasOverlay = null;
+	public GameObject pauseOverlay = null;
+
 	void Start()
 	{
 		overlayDone = false;
@@ -48,14 +51,14 @@ public class managerController : MonoBehaviour
 		{
 			if(startOverlay)
 			{
-				overlay.fillAmount += 2f*Time.deltaTime;
+				delayTimer -= Time.deltaTime;
+				if(delayTimer <= 0f)
+					overlay.fillAmount += 2f*Time.deltaTime;
 			}
 			if(overlay.fillAmount >= 1f)
 			{
 				startOverlay = false;
-				delayTimer -= Time.deltaTime;
-				if(delayTimer <= 0f)
-					overlayDone = true;
+				overlayDone = true;
 			}
 			if(overlayDone)
 			{
@@ -88,12 +91,20 @@ public class managerController : MonoBehaviour
 
 	public void pauseGame()
 	{
+		if(canvasOverlay == null || pauseOverlay == null)
+			return;
 		Time.timeScale = 0;
+		canvasOverlay.SetActive(false); //hide all control buttons
+		pauseOverlay.SetActive(true); //turn all the pause overlay
 	}
 
 	public void unpauseGame()
 	{
+		if(canvasOverlay == null || pauseOverlay == null)
+			return;
 		Time.timeScale = 1;
+		canvasOverlay.SetActive(true);
+		pauseOverlay.SetActive(false);
 	}
 
 	public void playDemo()
